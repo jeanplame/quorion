@@ -54,6 +54,22 @@ CREATE TABLE projects (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE team_members (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(160) NOT NULL,
+    position VARCHAR(160) NOT NULL,
+    bio TEXT NOT NULL,
+    image_path VARCHAR(255) NOT NULL,
+    facebook_url VARCHAR(255) NOT NULL DEFAULT '',
+    twitter_url VARCHAR(255) NOT NULL DEFAULT '',
+    instagram_url VARCHAR(255) NOT NULL DEFAULT '',
+    linkedin_url VARCHAR(255) NOT NULL DEFAULT '',
+    display_order INT UNSIGNED NOT NULL DEFAULT 0,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE contact_messages (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(160) NOT NULL,
@@ -125,6 +141,11 @@ INSERT INTO projects (category, title, image_path, display_order) VALUES
 ('Pilotage', 'Outil d’aide à la décision', 'SeoMaster/img/portfolio-4.jpg', 4),
 ('Organisation sociale', 'Solution de suivi de programme', 'SeoMaster/img/portfolio-5.jpg', 5),
 ('Institution', 'Portail de services numériques', 'SeoMaster/img/portfolio-6.jpg', 6);
+
+INSERT INTO team_members (name, position, bio, image_path, display_order) VALUES
+('Membre QUORION', 'Direction stratégique', 'Coordination de la vision, des partenariats et de la qualité des solutions.', 'SeoMaster/img/portfolio-1.jpg', 1),
+('Membre QUORION', 'Ingénierie logicielle', 'Conception et développement de solutions fiables, simples et évolutives.', 'SeoMaster/img/portfolio-2.jpg', 2),
+('Membre QUORION', 'Accompagnement digital', 'Analyse des besoins, suivi des projets et proximité avec les organisations accompagnées.', 'SeoMaster/img/portfolio-3.jpg', 3);
 
 INSERT INTO admins (name, email, password_hash) VALUES
 ('Administrateur QUORION', 'admin@quorion.local', '$2y$10$OB7wnfX642mDYPrgoDa0uux3ysQ4jXXsE90LRG.Zr/zPRQCBOxfWK');

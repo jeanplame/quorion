@@ -17,7 +17,9 @@ Ouvrir `http://localhost/quorion/admin/login.php`.
 - E-mail : `admin@quorion.local`
 - Mot de passe initial : `Quorion2026!`
 
-Changez ce mot de passe avant toute mise en ligne. L’administration permet de modifier les paramètres et textes, les valeurs, les services, les projets, les messages de contact et les abonnés à la newsletter.
+Changez ce mot de passe avant toute mise en ligne. L’administration permet de modifier les paramètres et textes, les valeurs, les services, les projets, les membres, les messages de contact et les abonnés à la newsletter.
+
+Si votre base existait déjà avant l’ajout de la section membres, exécutez `database/add_team_members.sql`.
 
 ## Arborescence utile
 

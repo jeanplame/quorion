@@ -11,6 +11,7 @@ $about = content_block('about');
 $blocks = [content_block('mission'), content_block('vision'), content_block('approach')];
 $why = content_block('why');
 $signature = content_block('signature');
+$memberList = members();
 
 require __DIR__ . '/partials/header.php';
 ?>
@@ -84,4 +85,5 @@ require __DIR__ . '/partials/header.php';
             </div>
         </div>
         <!-- Why End -->
+<?php require __DIR__ . '/partials/members-section.php'; ?>
 <?php require __DIR__ . '/partials/footer.php'; ?>

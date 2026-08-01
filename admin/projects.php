@@ -11,16 +11,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = (int) ($_POST['id'] ?? 0);
 
     if ($action === 'save') {
-        $data = [trim($_POST['category'] ?? ''), trim($_POST['title'] ?? ''), trim($_POST['image_path'] ?? ''), trim($_POST['project_url'] ?? ''), (int) ($_POST['display_order'] ?? 0), isset($_POST['is_active']) ? 1 : 0];
-        if ($data[0] !== '' && $data[1] !== '' && $data[2] !== '') {
-            if ($id > 0) {
-                db()->prepare('UPDATE projects SET category = ?, title = ?, image_path = ?, project_url = ?, display_order = ?, is_active = ? WHERE id = ?')->execute([...$data, $id]);
+        try {
+            $imagePath = upload_image('image_file', trim($_POST['current_image_path'] ?? ''));
+            $data = [trim($_POST['category'] ?? ''), trim($_POST['title'] ?? ''), $imagePath, trim($_POST['project_url'] ?? ''), (int) ($_POST['display_order'] ?? 0), isset($_POST['is_active']) ? 1 : 0];
+            if ($data[0] !== '' && $data[1] !== '' && $data[2] !== '') {
+                if ($id > 0) {
+                    db()->prepare('UPDATE projects SET category = ?, title = ?, image_path = ?, project_url = ?, display_order = ?, is_active = ? WHERE id = ?')->execute([...$data, $id]);
+                } else {
+                    db()->prepare('INSERT INTO projects (category, title, image_path, project_url, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?)')->execute($data);
+                }
+                flash('success', 'Le projet a été enregistré.');
             } else {
-                db()->prepare('INSERT INTO projects (category, title, image_path, project_url, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?)')->execute($data);
+                flash('error', 'La catégorie, le titre et l’image sont obligatoires.');
             }
-            flash('success', 'Le projet a été enregistré.');
-        } else {
-            flash('error', 'La catégorie, le titre et le chemin de l’image sont obligatoires.');
+        } catch (RuntimeException $exception) {
+            flash('error', $exception->getMessage());
         }
     }
 
@@ -31,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     redirect('projects.php');
 }
 
-$edit = ['id' => '', 'category' => '', 'title' => '', 'image_path' => 'SeoMaster/img/portfolio-1.jpg', 'project_url' => '', 'display_order' => 10, 'is_active' => 1];
+$edit = ['id' => '', 'category' => '', 'title' => '', 'image_path' => '', 'project_url' => '', 'display_order' => 10, 'is_active' => 1];
 if (isset($_GET['edit'])) {
     $statement = db()->prepare('SELECT * FROM projects WHERE id = ?');
     $statement->execute([(int) $_GET['edit']]);
@@ -44,13 +49,13 @@ admin_flash();
 ?>
         <div class="card shadow-sm border-0 mb-4"><div class="card-body">
             <h2 class="h5 mb-3"><?= $edit['id'] ? 'Modifier le projet' : 'Ajouter un projet' ?></h2>
-            <form method="post" class="row g-3">
-                <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save"><input type="hidden" name="id" value="<?= e((string) $edit['id']) ?>">
+            <form method="post" enctype="multipart/form-data" class="row g-3">
+                <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save"><input type="hidden" name="id" value="<?= e((string) $edit['id']) ?>"><input type="hidden" name="current_image_path" value="<?= e($edit['image_path']) ?>">
                 <div class="col-md-4"><label class="form-label">Catégorie</label><input class="form-control" name="category" value="<?= e($edit['category']) ?>" maxlength="160" required></div>
                 <div class="col-md-5"><label class="form-label">Titre</label><input class="form-control" name="title" value="<?= e($edit['title']) ?>" maxlength="160" required></div>
                 <div class="col-md-2"><label class="form-label">Ordre</label><input class="form-control" name="display_order" type="number" value="<?= e((string) $edit['display_order']) ?>" required></div>
                 <div class="col-md-1 d-flex align-items-end"><div class="form-check mb-2"><input class="form-check-input" id="active" name="is_active" type="checkbox" <?= $edit['is_active'] ? 'checked' : '' ?>><label class="form-check-label" for="active">Actif</label></div></div>
-                <div class="col-md-6"><label class="form-label">Chemin de l’image</label><input class="form-control" name="image_path" value="<?= e($edit['image_path']) ?>" required></div>
+                <div class="col-md-6"><label class="form-label">Image</label><input class="form-control" name="image_file" type="file" accept="image/*" <?= $edit['image_path'] ? '' : 'required' ?>><?php if ($edit['image_path']): ?><div class="form-text">Image actuelle conservée si aucun nouveau fichier n’est choisi.</div><?php endif; ?></div>
                 <div class="col-md-6"><label class="form-label">Lien du projet (facultatif)</label><input class="form-control" name="project_url" value="<?= e($edit['project_url']) ?>"></div>
                 <div class="col-12"><button class="btn btn-primary" type="submit">Enregistrer</button><?php if ($edit['id']): ?> <a class="btn btn-link" href="projects.php">Annuler</a><?php endif; ?></div>
             </form>
