@@ -1,0 +1,129 @@
+/* Identité QUORION : bleu nuit #11224E, orange #F87B1B, blanc #FFFFFF. */
+:root {
+    --primary: #11224E;
+    --secondary: #F87B1B;
+    --light: #FFFFFF;
+    --dark: #11224E;
+}
+
+.bg-primary {
+    background-color: #11224E !important;
+}
+
+.bg-secondary {
+    background-color: #F87B1B !important;
+}
+
+.text-primary {
+    color: #F87B1B !important;
+}
+
+.text-secondary {
+    color: #F87B1B !important;
+}
+
+.btn-primary {
+    color: #FFFFFF;
+    background-color: #11224E;
+    border-color: #11224E;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    color: #FFFFFF;
+    background-color: #0B1738;
+    border-color: #0B1738;
+}
+
+.btn-secondary {
+    color: #11224E;
+    background-color: #F87B1B;
+    border-color: #F87B1B;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+    color: #11224E;
+    background-color: #FF982F;
+    border-color: #FF982F;
+}
+
+.btn-outline-primary {
+    color: #11224E;
+    border-color: #11224E;
+}
+
+.btn-outline-primary:hover {
+    color: #FFFFFF;
+    background-color: #11224E;
+    border-color: #11224E;
+}
+
+.form-control:focus {
+    border-color: #F87B1B;
+    box-shadow: 0 0 0 .25rem rgba(248, 123, 27, .25);
+}
+
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .nav-link.active {
+    color: #F87B1B !important;
+}
+
+.navbar-light .navbar-nav .nav-link::before {
+    background: #F87B1B;
+}
+
+.quorion-logo {
+    display: block;
+    width: auto;
+    max-height: 58px;
+}
+
+/* Le logo fourni est bleu nuit ; il devient blanc sur la barre superposée au hero. */
+/* .navbar-light:not(.sticky-top) .quorion-logo,
+.footer-logo {
+    filter: brightness(0) invert(1);
+
+} */
+
+.sticky-top.navbar-light .quorion-logo {
+    filter: none;
+}
+
+.section-title h6::before,
+.section-title h6::after {
+    background: rgba(248, 123, 27, .55);
+}
+
+.service-item:hover,
+.portfolio-overlay {
+    background: #11224E;
+}
+
+.service-item .service-icon {
+    color: #FFFFFF;
+    filter: hue-rotate(162deg) saturate(.8) brightness(.65);
+}
+
+.service-item:hover .service-icon {
+    color: #11224E;
+    filter: none;
+}
+
+.footer .btn.btn-social:hover {
+    color: #F87B1B;
+}
+
+.footer-logo {
+    width: auto;
+    max-height: 52px;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-light:not(.sticky-top) .quorion-logo {
+        filter: none;
+    }
+}
