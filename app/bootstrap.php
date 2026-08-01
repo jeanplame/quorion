@@ -95,9 +95,64 @@ function projects(?int $limit = null): array
     return db()->query($sql)->fetchAll();
 }
 
+function members(?int $limit = null): array
+{
+    $sql = 'SELECT * FROM team_members WHERE is_active = 1 ORDER BY display_order, id';
+    if ($limit !== null) {
+        $sql .= ' LIMIT ' . (int) $limit;
+    }
+    return db()->query($sql)->fetchAll();
+}
+
 function company_values(): array
 {
     return db()->query('SELECT * FROM company_values WHERE is_active = 1 ORDER BY display_order, id')->fetchAll();
+}
+
+function upload_image(string $field, string $currentPath = ''): string
+{
+    if (empty($_FILES[$field]) || ($_FILES[$field]['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+        return $currentPath;
+    }
+
+    $file = $_FILES[$field];
+    if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+        throw new RuntimeException('Le téléversement de l’image a échoué.');
+    }
+
+    if (($file['size'] ?? 0) > 3 * 1024 * 1024) {
+        throw new RuntimeException('L’image ne doit pas dépasser 3 Mo.');
+    }
+
+    $tmpName = (string) ($file['tmp_name'] ?? '');
+    $info = @getimagesize($tmpName);
+    if ($info === false) {
+        throw new RuntimeException('Le fichier envoyé doit être une image valide.');
+    }
+
+    $extensions = [
+        IMAGETYPE_JPEG => 'jpg',
+        IMAGETYPE_PNG => 'png',
+        IMAGETYPE_GIF => 'gif',
+        IMAGETYPE_WEBP => 'webp',
+    ];
+    $extension = $extensions[$info[2]] ?? null;
+    if ($extension === null) {
+        throw new RuntimeException('Format accepté : JPG, PNG, GIF ou WebP.');
+    }
+
+    $uploadDir = ROOT_PATH . '/assets/uploads';
+    if (!is_dir($uploadDir) && !mkdir($uploadDir, 0775, true) && !is_dir($uploadDir)) {
+        throw new RuntimeException('Impossible de préparer le dossier d’uploads.');
+    }
+
+    $filename = bin2hex(random_bytes(12)) . '.' . $extension;
+    $destination = $uploadDir . '/' . $filename;
+    if (!move_uploaded_file($tmpName, $destination)) {
+        throw new RuntimeException('Impossible d’enregistrer l’image envoyée.');
+    }
+
+    return 'assets/uploads/' . $filename;
 }
 
 function csrf_token(): string

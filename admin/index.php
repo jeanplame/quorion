@@ -8,6 +8,7 @@ require_admin();
 $counts = [
     'Services' => (int) db()->query('SELECT COUNT(*) FROM services')->fetchColumn(),
     'Projets' => (int) db()->query('SELECT COUNT(*) FROM projects')->fetchColumn(),
+    'Membres' => (int) db()->query('SELECT COUNT(*) FROM team_members')->fetchColumn(),
     'Messages non lus' => (int) db()->query('SELECT COUNT(*) FROM contact_messages WHERE is_read = 0')->fetchColumn(),
     'Abonnés newsletter' => (int) db()->query('SELECT COUNT(*) FROM newsletter_subscribers')->fetchColumn(),
 ];

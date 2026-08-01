@@ -22,12 +22,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $keys = ['about', 'mission', 'vision', 'approach', 'why', 'signature'];
         $key = $_POST['block_key'] ?? '';
         if (in_array($key, $keys, true)) {
-            $statement = db()->prepare('UPDATE content_blocks SET eyebrow = ?, title = ?, content = ?, image_path = ?, button_text = ?, button_url = ? WHERE block_key = ?');
-            $statement->execute([
-                trim($_POST['eyebrow'] ?? ''), trim($_POST['title'] ?? ''), trim($_POST['content'] ?? ''),
-                trim($_POST['image_path'] ?? ''), trim($_POST['button_text'] ?? ''), trim($_POST['button_url'] ?? ''), $key,
-            ]);
-            flash('success', 'Le bloc de contenu a été enregistré.');
+            try {
+                $imagePath = upload_image('image_file', trim($_POST['current_image_path'] ?? ''));
+                $statement = db()->prepare('UPDATE content_blocks SET eyebrow = ?, title = ?, content = ?, image_path = ?, button_text = ?, button_url = ? WHERE block_key = ?');
+                $statement->execute([
+                    trim($_POST['eyebrow'] ?? ''), trim($_POST['title'] ?? ''), trim($_POST['content'] ?? ''),
+                    $imagePath, trim($_POST['button_text'] ?? ''), trim($_POST['button_url'] ?? ''), $key,
+                ]);
+                flash('success', 'Le bloc de contenu a été enregistré.');
+            } catch (RuntimeException $exception) {
+                flash('error', $exception->getMessage());
+            }
         }
     }
 
@@ -94,13 +99,13 @@ admin_flash();
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-header bg-white"><strong><?= e(ucfirst($block['block_key'])) ?></strong></div>
             <div class="card-body">
-                <form method="post">
-                    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_block"><input type="hidden" name="block_key" value="<?= e($block['block_key']) ?>">
+                <form method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_block"><input type="hidden" name="block_key" value="<?= e($block['block_key']) ?>"><input type="hidden" name="current_image_path" value="<?= e($block['image_path']) ?>">
                     <div class="row g-3">
                         <div class="col-md-4"><label class="form-label">Surtitre</label><input class="form-control" name="eyebrow" value="<?= e($block['eyebrow']) ?>"></div>
                         <div class="col-md-8"><label class="form-label">Titre</label><input class="form-control" name="title" value="<?= e($block['title']) ?>"></div>
                         <div class="col-12"><label class="form-label">Texte</label><textarea class="form-control" name="content" rows="4"><?= e($block['content']) ?></textarea></div>
-                        <div class="col-md-6"><label class="form-label">Chemin image</label><input class="form-control" name="image_path" value="<?= e($block['image_path']) ?>"></div>
+                        <div class="col-md-6"><label class="form-label">Image</label><input class="form-control" name="image_file" type="file" accept="image/*"><?php if ($block['image_path']): ?><div class="form-text">Image actuelle conservée si aucun nouveau fichier n’est choisi.</div><?php endif; ?></div>
                         <div class="col-md-3"><label class="form-label">Texte bouton</label><input class="form-control" name="button_text" value="<?= e($block['button_text']) ?>"></div>
                         <div class="col-md-3"><label class="form-label">Lien bouton</label><input class="form-control" name="button_url" value="<?= e($block['button_url']) ?>"></div>
                     </div>

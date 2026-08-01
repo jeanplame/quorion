@@ -10,6 +10,7 @@ $pageTitle = 'Accueil';
 $about = content_block('about');
 $serviceList = services(6);
 $projectList = projects(6);
+$memberList = members(6);
 $success = flash('success');
 $error = flash('error');
 
@@ -101,4 +102,5 @@ require __DIR__ . '/partials/header.php';
             </div>
         </div>
         <!-- Portfolio End -->
+<?php require __DIR__ . '/partials/members-section.php'; ?>
 <?php require __DIR__ . '/partials/footer.php'; ?>

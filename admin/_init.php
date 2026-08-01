@@ -29,6 +29,7 @@ function admin_header(string $title): void
                     <a class="nav-link" href="content.php">Contenus</a>
                     <a class="nav-link" href="services.php">Services</a>
                     <a class="nav-link" href="projects.php">Projets</a>
+                    <a class="nav-link" href="members.php">Membres</a>
                     <a class="nav-link" href="messages.php">Messages</a>
                     <a class="nav-link" href="subscribers.php">Newsletter</a>
                     <a class="nav-link" href="../index.php" target="_blank">Voir le site</a>
